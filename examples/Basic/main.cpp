@@ -1,48 +1,26 @@
-#include <Arduino.h>
+#define ZENOH_ROUTER_ADDRESS "serial/UART_1#baudrate=115200"
+#define ZENOH_NODE_NAME "mi_node"
 
-#include "micro_rosso.h"
+#include "picorosso.h"
+PicoRosso picorosso;
 
 #include "ticker.h"
 Ticker ticker;
 
-#include "sync_time.h"
-SyncTime sync_time;
-
-#include "ros_status.h"
-RosStatus ros_status;
-
-void setup()
+extern "C"
 {
-  D_println("Booting...");
-
-  D_print("Setting up transport... ");
-  Serial.begin(115200);
-  set_microros_serial_transports(Serial);
-
-  if (!micro_rosso::setup("my_node_name"))
-  {
-    D_println("FAIL micro_rosso.setup()");
-  }
-
-  if (!ticker.setup())
-  {
-    D_println("FAIL ticker.setup()");
-  };
-
-  if (!sync_time.setup())
-  {
-    D_println("FAIL sync_time.setup()");
-  };
-
-  if (!ros_status.setup())
-  {
-    D_println("FAIL ros_status.setup()");
-  };
-
-  D_println("Boot completed.");
+    void app_main(void);
 }
 
-void loop()
+void app_main()
 {
-  micro_rosso::loop();
+    // PicoRosso initalization //////////////////////////////
+    picorosso.setup(ZENOH_NODE_NAME, ZENOH_ROUTER_ADDRESS);
+
+    ticker.setup("tick");
+
+    while (true)
+    {
+        vTaskDelay(60000 / portTICK_PERIOD_MS);
+    }
 }
