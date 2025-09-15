@@ -1,0 +1,44 @@
+#ifndef __PICOROSSO_H
+#define __PICOROSSO_H
+
+#include "picorosso_config.h"
+
+#include "picoros.h"
+#include "picoserdes.h"
+
+#include "rosout.h"
+
+/*
+#define pr_publish(publisher,msg) PicoRosso::publish(&publisher, \
+                       PicoRosso::publisher_buf, \
+                       ps_serialize(PicoRosso::publisher_buf, &msg, sizeof(PicoRosso::publisher_buf)))
+*/
+#define pr_publish(publisher, msg)                                                              \
+  size_t len_ = ps_serialize(PicoRosso::publisher_buf, &msg, sizeof(PicoRosso::publisher_buf)); \
+  if (len_ > 0)                                                                                 \
+  {                                                                                             \
+    picoros_publish(&publisher, PicoRosso::publisher_buf, len_);                                \
+  }                                                                                             \
+  else                                                                                          \
+  {                                                                                             \
+    ESP_LOGE("picorosso", "Message serialization error.");                                      \
+  }
+
+class PicoRosso
+{
+public:
+  static bool setup(const char *node_name,
+                    const char *zenoh_router_address);
+  static picoros_node_t node;
+  static Rosout rosout;
+  static void set_timestamp(ros_Time &stamp);
+  static void set_timestamp(ros_Time &stamp, z_clock_t &now);
+
+  // nothing bellow here is for users to use
+  static uint8_t publisher_buf[PUBLISHER_BUF_SIZE]; // pre-allocated buffer for serialization
+  PicoRosso();
+  PicoRosso(PicoRosso const &);      // Don't Implement
+  void operator=(PicoRosso const &); // Don't implement
+};
+
+#endif // __PICOROSSO_H
