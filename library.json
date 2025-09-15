@@ -1,21 +1,18 @@
 {
-    "name": "picorosso",
-    "version": "0.0.1",
-    "description": "A modular system for Pico-ROS on microcontrollers",
-    "keywords": "ros, pico-ros, robot, picorosso",
-    "authors":
-    [
-      {
-        "name": "Jorge Visca",
-        "email": "jvisca@fing.edu.uy",
-        "url": "https://www.fing.edu.uy/~jvisca/",
-        "maintainer": true
-      }
-    ],
-    "license": "Apache 2.0",
-    "dependencies": {
-      "micro_ros_platformio": "https://github.com/eclipse-zenoh/zenoh-pico"
-    },
-    "frameworks": "espidf",
-    "platforms": "espressif32"
-  }
+  "name": "picorosso",
+  "version": "0.0.1",
+  "description": "A modular system for Pico-ROS on microcontrollers",
+  "keywords": "ros, pico-ros, robot, picorosso",
+  "authors": [
+    {
+      "name": "Jorge Visca",
+      "email": "jvisca@fing.edu.uy",
+      "url": "https://www.fing.edu.uy/~jvisca/",
+      "maintainer": true
+    }
+  ],
+  "license": "Apache 2.0",
+  "dependencies": {},
+  "frameworks": "espidf",
+  "platforms": "espressif32"
+}
