@@ -3,6 +3,11 @@
 #include "picorosso.h"
 #include "ticker.h"
 
+#define TSK_MINIMAL_STACK_SIZE (1024)
+#define TICKER_TASK_NAME "ticker_task"
+#define TICKER_TASK_STACK_SIZE (TSK_MINIMAL_STACK_SIZE * 1)
+#define TICKER_TASK_PRIORITY (tskIDLE_PRIORITY + 0)
+
 static const char *TAG = "ticker";
 
 static picoros_publisher_t publisher_tick = {
@@ -38,7 +43,13 @@ bool Ticker::setup(const char *topic_name)
   publisher_tick.topic.name = topic_name;
   picoros_publisher_declare(&PicoRosso::node, &publisher_tick);
 
-  xTaskCreate(ticker_task, "ticker_task", 4096, NULL, 1, NULL);
+  xTaskCreate(
+      ticker_task,
+      TICKER_TASK_NAME,
+      TICKER_TASK_STACK_SIZE,
+      NULL,
+      TICKER_TASK_PRIORITY,
+      NULL);
 
   ESP_LOGD(TAG, "Setting up done.");
 
