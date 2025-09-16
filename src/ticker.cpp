@@ -5,7 +5,7 @@
 
 #define TSK_MINIMAL_STACK_SIZE (1024)
 #define TICKER_TASK_NAME "ticker_task"
-#define TICKER_TASK_STACK_SIZE (TSK_MINIMAL_STACK_SIZE * 1)
+#define TICKER_TASK_STACK_SIZE (TSK_MINIMAL_STACK_SIZE * 5)
 #define TICKER_TASK_PRIORITY (tskIDLE_PRIORITY + 0)
 
 static const char *TAG = "ticker";

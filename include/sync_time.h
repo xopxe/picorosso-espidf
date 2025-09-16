@@ -11,7 +11,7 @@
 //        FIELD(rstring, frame_id)
 //    )
 
-#define MESSAGE_TIMEOUT_uS 100 * 1000 // time to wait for a response
+#define MESSAGE_TIMEOUT_uS 200 * 1000 // time to wait for a response
 #define MESSAGE_COUNT 20              // measures averaged during estimate_offset
 
 enum SyncTimeStates
