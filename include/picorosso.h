@@ -13,16 +13,18 @@
                        PicoRosso::publisher_buf, \
                        ps_serialize(PicoRosso::publisher_buf, &msg, sizeof(PicoRosso::publisher_buf)))
 */
-#define pr_publish(publisher, msg)                                                              \
-  size_t len_ = ps_serialize(PicoRosso::publisher_buf, &msg, sizeof(PicoRosso::publisher_buf)); \
-  if (len_ > 0)                                                                                 \
-  {                                                                                             \
-    picoros_publish(&publisher, PicoRosso::publisher_buf, len_);                                \
-  }                                                                                             \
-  else                                                                                          \
-  {                                                                                             \
-    ESP_LOGE("picorosso", "Message serialization error.");                                      \
-  }
+#define pr_publish(publisher, msg)                                                                \
+  ({                                                                                               \
+    size_t len_ = ps_serialize(PicoRosso::publisher_buf, &msg, sizeof(PicoRosso::publisher_buf)); \
+    if (len_ > 0)                                                                                 \
+    {                                                                                             \
+      picoros_publish(&publisher, PicoRosso::publisher_buf, len_);                                \
+    }                                                                                             \
+    else                                                                                          \
+    {                                                                                             \
+      ESP_LOGE("picorosso", "Message serialization error.");                                      \
+    }                                                                                             \
+  })
 
 class PicoRosso
 {
