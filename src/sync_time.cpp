@@ -22,7 +22,7 @@ SyncTimeStates SyncTime::sync_state = SYNC_TIME_UNSYNCED;
 
 static picoros_publisher_t publisher_rntp_request = {
     .topic = {
-        .name = NULL, //(char *)"rntp_request",
+        .name = NULL, //(char *)"sync_time_request",
         .type = ROSTYPE_NAME(ros_String),
         .rihs_hash = ROSTYPE_HASH(ros_String),
     },
@@ -35,7 +35,7 @@ static picoros_publisher_t publisher_rntp_request = {
 static void rntp_response_cb(uint8_t *rx_data, size_t data_len);
 picoros_subscriber_t subscription_rntp_response = {
     .topic = {
-        .name = NULL, //(char *)"rntp_response",
+        .name = NULL, //(char *)"sync_time_response",
         .type = ROSTYPE_NAME(ros_TimeReference),
         .rihs_hash = ROSTYPE_HASH(ros_TimeReference),
     },

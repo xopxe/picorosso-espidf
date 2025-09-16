@@ -25,8 +25,8 @@ class SyncTime
 {
 public:
   SyncTime();
-  static bool setup(const char *topic_request = "rntp_request",
-                    const char *topic_response = "rntp_response",
+  static bool setup(const char *topic_request = "sync_time_request",
+                    const char *topic_response = "sync_time_response",
                     const char *source = "sync_time");
 
   static bool synchronize_clock();
