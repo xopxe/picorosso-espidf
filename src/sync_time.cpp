@@ -103,18 +103,36 @@ static void rntp_response_cb(uint8_t *rx_data, size_t data_len)
 
 bool SyncTime::synchronize_clock()
 {
+  ESP_LOGD(TAG, "Waiting for server...");
+
+  uint64_t wait_start_time_us = esp_timer_get_time();
+  while (esp_timer_get_time() - wait_start_time_us < WAIT_FOR_SERVER_US && sync_state != SYNC_TIME_SYNCED)
+  {
+    trigger_sync();
+    uint64_t start_time_us = esp_timer_get_time();
+    while (esp_timer_get_time() - start_time_us < MESSAGE_TIMEOUT_US && sync_state != SYNC_TIME_SYNCED)
+    {
+      z_sleep_ms(5);
+    }
+  }
+
+  if (sync_state != SYNC_TIME_SYNCED)
+  {
+    ESP_LOGE(TAG, "synch_time responder not found");
+    return false;
+  }
+
   ESP_LOGD(TAG, "Synchronizing clock...");
   uint64_t avg_offset_ns = 0;
   uint64_t avg_rtt_ns = 0;
   int hit_count = 0;
   for (int count = 0; count < MESSAGE_COUNT; count++)
   {
-    z_sleep_ms(50);
     trigger_sync();
 
     // Wait for a synchronization to complete
     uint64_t start_time_us = esp_timer_get_time();
-    while (esp_timer_get_time() - start_time_us < MESSAGE_TIMEOUT_uS && sync_state != SYNC_TIME_SYNCED)
+    while (esp_timer_get_time() - start_time_us < MESSAGE_TIMEOUT_US && sync_state != SYNC_TIME_SYNCED)
     {
       z_sleep_ms(5);
     }
@@ -130,6 +148,7 @@ bool SyncTime::synchronize_clock()
     {
       ESP_LOGW(TAG, "Reading offset [%i] failed", count);
     }
+    z_sleep_ms(50);
   }
   ESP_LOGI(TAG, "Clock offset [%lld] rtt [%lld] averaging [%i] values", offset_ns, rtt_ns, hit_count);
 

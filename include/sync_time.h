@@ -11,8 +11,9 @@
 //        FIELD(rstring, frame_id)
 //    )
 
-#define MESSAGE_TIMEOUT_uS 200 * 1000 // time to wait for a response
-#define MESSAGE_COUNT 20              // measures averaged during estimate_offset
+#define WAIT_FOR_SERVER_US 20 * 1000 * 1000 // Time for watiing until first response (in case we connect on a fresh router)
+#define MESSAGE_TIMEOUT_US 200 * 1000       // time to wait for a response
+#define MESSAGE_COUNT 20                    // measures averaged during estimate_offset
 
 enum SyncTimeStates
 {
