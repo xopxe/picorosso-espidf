@@ -5,6 +5,10 @@
 #include "picoros.h"
 #include "picoserdes.h"
 
+#define PUBLISHER_BUF_SIZE 1024 // TODO
+
+static uint8_t publisher_buf[PUBLISHER_BUF_SIZE]; // pre-allocated buffer for serialization
+
 static const char *TAG = "picorosso";
 
 static picoros_publisher_t publisher_log = {
@@ -49,5 +53,5 @@ void Rosout::out(const char *s,
     };
     PicoRosso::set_timestamp(msg_log.stamp);
 
-    pr_publish(publisher_log, msg_log);
+    pr_publish(publisher_log, msg_log, publisher_buf, sizeof(publisher_buf));
 }

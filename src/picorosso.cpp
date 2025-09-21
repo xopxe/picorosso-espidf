@@ -7,7 +7,7 @@ static const char *TAG = "picorosso";
 static const char *zenoh_mode = "client";
 
 picoros_node_t PicoRosso::node;
-uint8_t PicoRosso::publisher_buf[PUBLISHER_BUF_SIZE];
+//uint8_t PicoRosso::publisher_buf[PUBLISHER_BUF_SIZE];
 
 #if defined(USE_SYNC_TIME)
 #include "sync_time.h"

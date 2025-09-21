@@ -13,17 +13,17 @@
                        PicoRosso::publisher_buf, \
                        ps_serialize(PicoRosso::publisher_buf, &msg, sizeof(PicoRosso::publisher_buf)))
 */
-#define pr_publish(publisher, msg)                                                                \
-  ({                                                                                               \
-    size_t len_ = ps_serialize(PicoRosso::publisher_buf, &msg, sizeof(PicoRosso::publisher_buf)); \
-    if (len_ > 0)                                                                                 \
-    {                                                                                             \
-      picoros_publish(&publisher, PicoRosso::publisher_buf, len_);                                \
-    }                                                                                             \
-    else                                                                                          \
-    {                                                                                             \
-      ESP_LOGE("picorosso", "Message serialization error.");                                      \
-    }                                                                                             \
+#define pr_publish(publisher, msg, buf, buf_size)            \
+  ({                                                         \
+    size_t len_ = ps_serialize(buf, &msg, buf_size);         \
+    if (len_ > 0)                                            \
+    {                                                        \
+      picoros_publish(&publisher, buf, len_);                \
+    }                                                        \
+    else                                                     \
+    {                                                        \
+      ESP_LOGE("picorosso", "Message serialization error."); \
+    }                                                        \
   })
 
 class PicoRosso
@@ -37,7 +37,7 @@ public:
   static void set_timestamp(ros_Time &stamp, z_clock_t &now);
 
   // nothing bellow here is for users to use
-  static uint8_t publisher_buf[PUBLISHER_BUF_SIZE]; // pre-allocated buffer for serialization
+  //static uint8_t publisher_buf[PUBLISHER_BUF_SIZE]; // pre-allocated buffer for serialization
   PicoRosso();
   PicoRosso(PicoRosso const &);      // Don't Implement
   void operator=(PicoRosso const &); // Don't implement
