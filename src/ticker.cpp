@@ -7,9 +7,6 @@
 #define TICKER_TASK_NAME "ticker_task"
 #define TICKER_TASK_STACK_SIZE (TSK_MINIMAL_STACK_SIZE * 5)
 #define TICKER_TASK_PRIORITY (tskIDLE_PRIORITY + 0)
-#define PUBLISHER_BUF_SIZE 128 //TODO
-
-static uint8_t publisher_buf[PUBLISHER_BUF_SIZE]; // pre-allocated buffer for serialization
 
 static const char *TAG = "ticker";
 
@@ -32,7 +29,7 @@ static void ticker_task(void *)
     static int loop_count;
     ros_Int32 msg_tick = loop_count++;
 
-    pr_publish(publisher_tick, msg_tick, publisher_buf, sizeof(publisher_buf));
+    pr_publish(publisher_tick, msg_tick);
 
     vTaskDelayUntil(&last_wake_time, 1000 / portTICK_PERIOD_MS);
   }

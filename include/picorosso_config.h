@@ -4,9 +4,9 @@
 /*
  Size of the pre-allocated buffer for serialization
 */
-//#if !defined(PUBLISHER_BUF_SIZE)
-//#define PUBLISHER_BUF_SIZE 1024
-//#endif
+#if !defined(PUBLISHER_BUF_SIZE)
+#define PUBLISHER_BUF_SIZE 1024
+#endif
 
 /*
 Use sync_time node to get synchronize

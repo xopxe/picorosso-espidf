@@ -5,10 +5,6 @@
 #include "picorosso.h"
 #include "sync_time.h"
 
-#define PUBLISHER_BUF_SIZE 1024 //TODO
-
-static uint8_t publisher_buf[PUBLISHER_BUF_SIZE]; // pre-allocated buffer for serialization
-
 static const char *TAG = "sync_time";
 
 // Based on NTP: https://en.wikipedia.org/wiki/Network_Time_Protocol
@@ -59,7 +55,7 @@ void SyncTime::trigger_sync()
 
   z_clock_t now = z_clock_now();
 
-  pr_publish(publisher_rntp_request, msg_sync_time_request, publisher_buf, sizeof(publisher_buf));
+  pr_publish(publisher_rntp_request, msg_sync_time_request);
 
   t0 = {
       .sec = (int32_t)now.tv_sec,

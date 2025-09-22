@@ -7,7 +7,8 @@ static const char *TAG = "picorosso";
 static const char *zenoh_mode = "client";
 
 picoros_node_t PicoRosso::node;
-//uint8_t PicoRosso::publisher_buf[PUBLISHER_BUF_SIZE];
+uint8_t PicoRosso::publisher_buf[PUBLISHER_BUF_SIZE];
+SemaphoreHandle_t PicoRosso::bufSemaphore = NULL;
 
 #if defined(USE_SYNC_TIME)
 #include "sync_time.h"
@@ -77,6 +78,9 @@ bool PicoRosso::setup(const char *node_name,
 {
     RESET_REASON reset_reason_0 = rtc_get_reset_reason(0);
     RESET_REASON reset_reason_1 = rtc_get_reset_reason(1);
+
+    bufSemaphore = xSemaphoreCreateBinary();
+    xSemaphoreGive(PicoRosso::bufSemaphore);
 
     PicoRosso::node = {
         .name = (char *)node_name,
