@@ -74,7 +74,8 @@ static const char *reset_reason_string(const RESET_REASON reason)
 }
 
 bool PicoRosso::setup(const char *node_name,
-                      const char *zenoh_router_address)
+                      const char *zenoh_router_address,
+                      const uint32_t domain_id)
 {
     RESET_REASON reset_reason_0 = rtc_get_reset_reason(0);
     RESET_REASON reset_reason_1 = rtc_get_reset_reason(1);
@@ -84,7 +85,7 @@ bool PicoRosso::setup(const char *node_name,
 
     PicoRosso::node = {
         .name = (char *)node_name,
-        .domain_id = 0,
+        .domain_id = domain_id,
     };
 
     // Initialize Pico ROS interface

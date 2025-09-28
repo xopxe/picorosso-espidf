@@ -26,7 +26,7 @@ should not shared between threads.
   })
 
 /*
-Publishes using an internal buffer of size PUBLISHER_BUF_SIZE 
+Publishes using an internal buffer of size PUBLISHER_BUF_SIZE
 for serialization. Thread safe. Good for easy, sporadic publishing.
 */
 #define pr_publish(publisher, msg)                                      \
@@ -49,7 +49,8 @@ class PicoRosso
 {
 public:
   static bool setup(const char *node_name,
-                    const char *zenoh_router_address);
+                    const char *zenoh_router_address,
+                    const uint32_t domain_id = 0);
   static picoros_node_t node;
   static Rosout rosout;
   static void set_timestamp(ros_Time &stamp);
