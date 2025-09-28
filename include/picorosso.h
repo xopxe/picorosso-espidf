@@ -12,7 +12,7 @@
 Publishes using a provided buffer for serialization. Buffer
 should not shared between threads.
 */
-#define pr_publish_buf(publisher, msg, buf, buf_size)            \
+#define pr_publish_buf(publisher, msg, buf, buf_size)        \
   ({                                                         \
     size_t len_ = ps_serialize(buf, &msg, buf_size);         \
     if (len_ > 0)                                            \
@@ -29,7 +29,7 @@ should not shared between threads.
 Publishes using an internal buffer of size PUBLISHER_BUF_SIZE 
 for serialization. Thread safe. Good for easy, sporadic publishing.
 */
-#define pr_publish(publisher, msg)                           \
+#define pr_publish(publisher, msg)                                      \
   ({                                                                    \
     xSemaphoreTake(PicoRosso::bufSemaphore, portMAX_DELAY);             \
     size_t len_ = ps_serialize(PicoRosso::publisher_buf,                \

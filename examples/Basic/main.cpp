@@ -21,6 +21,6 @@ void app_main()
 
     while (true)
     {
-        vTaskDelay(60000 / portTICK_PERIOD_MS);
+        vTaskDelay(pdMS_TO_TICKS(60000));
     }
 }

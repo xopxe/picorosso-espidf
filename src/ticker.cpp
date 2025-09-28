@@ -31,7 +31,7 @@ static void ticker_task(void *)
 
     pr_publish(publisher_tick, msg_tick);
 
-    vTaskDelayUntil(&last_wake_time, 1000 / portTICK_PERIOD_MS);
+    vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(1000));
   }
 }
 
