@@ -20,7 +20,7 @@ static int64_t rtt_ns;
 
 SyncTimeStates SyncTime::sync_state = SYNC_TIME_UNSYNCED;
 
-static picoros_publisher_t publisher_rntp_request = {
+static picoros_publisher_t publisher_sync_request = {
     .topic = {
         .name = NULL, //(char *)"sync_time_request",
         .type = ROSTYPE_NAME(ros_String),
@@ -32,14 +32,14 @@ static picoros_publisher_t publisher_rntp_request = {
         .is_express = true,
     }};
 
-static void rntp_response_cb(uint8_t *rx_data, size_t data_len);
-picoros_subscriber_t subscription_rntp_response = {
+static void sync_response_cb(uint8_t *rx_data, size_t data_len);
+picoros_subscriber_t subscription_sync_response = {
     .topic = {
         .name = NULL, //(char *)"sync_time_response",
         .type = ROSTYPE_NAME(ros_TimeReference),
         .rihs_hash = ROSTYPE_HASH(ros_TimeReference),
     },
-    .user_callback = rntp_response_cb,
+    .user_callback = sync_response_cb,
 };
 
 SyncTime::SyncTime() {}
@@ -55,7 +55,7 @@ void SyncTime::trigger_sync()
 
   z_clock_t now = z_clock_now();
 
-  pr_publish(publisher_rntp_request, msg_sync_time_request);
+  pr_publish(publisher_sync_request, msg_sync_time_request);
 
   t0 = {
       .sec = (int32_t)now.tv_sec,
@@ -63,7 +63,7 @@ void SyncTime::trigger_sync()
   };
 }
 
-static void rntp_response_cb(uint8_t *rx_data, size_t data_len)
+static void sync_response_cb(uint8_t *rx_data, size_t data_len)
 {
   z_clock_t now = z_clock_now();
   if (SyncTime::sync_state != SYNC_TIME_SYNCING)
@@ -72,22 +72,22 @@ static void rntp_response_cb(uint8_t *rx_data, size_t data_len)
     return;
   }
 
-  ros_TimeReference msg_rntp_response = {};
-  if (ps_deserialize(rx_data, &msg_rntp_response, data_len))
+  ros_TimeReference msg_sync_response = {};
+  if (ps_deserialize(rx_data, &msg_sync_response, data_len))
   {
 
     // for (int i=0; i<sizeof(msg_token)) {
     //   printf("---> [%d] [%d]\n", token[i] msg_token[i]);
     // }
-    if (strcmp(msg_rntp_response.source, msg_token) != 0)
+    if (strcmp(msg_sync_response.source, msg_token) != 0)
     {
-      ESP_LOGW(TAG, "errant response detected for [%s]: [%s]", msg_token, msg_rntp_response.source);
+      ESP_LOGW(TAG, "errant response detected for [%s]: [%s]", msg_token, msg_sync_response.source);
       return;
     }
 
     uint64_t t0_ns = (uint64_t)t0.sec * 1000000000 + t0.nanosec;
-    uint64_t t1_ns = (uint64_t)msg_rntp_response.time_ref.sec * 1000000000 + msg_rntp_response.time_ref.nanosec;
-    uint64_t t2_ns = (uint64_t)msg_rntp_response.header.stamp.sec * 1000000000 + msg_rntp_response.header.stamp.nanosec;
+    uint64_t t1_ns = (uint64_t)msg_sync_response.time_ref.sec * 1000000000 + msg_sync_response.time_ref.nanosec;
+    uint64_t t2_ns = (uint64_t)msg_sync_response.header.stamp.sec * 1000000000 + msg_sync_response.header.stamp.nanosec;
     uint64_t t3_ns = (uint64_t)now.tv_sec * 1000000000 + now.tv_nsec;
 
     offset_ns = ((t1_ns - t0_ns) + (t2_ns - t3_ns)) / 2;
@@ -97,7 +97,7 @@ static void rntp_response_cb(uint8_t *rx_data, size_t data_len)
   }
   else
   {
-    ESP_LOGE(TAG, "rntp_response message deserialization error");
+    ESP_LOGE(TAG, "sync_response message deserialization error");
   }
 }
 
@@ -181,12 +181,12 @@ bool SyncTime::setup(const char *topic_request,
   ESP_LOGD(TAG, "Setting up...");
 
   ESP_LOGI(TAG, "Declaring publisher on [%s]", topic_request);
-  publisher_rntp_request.topic.name = (char *)topic_request;
-  picoros_publisher_declare(&PicoRosso::node, &publisher_rntp_request);
+  publisher_sync_request.topic.name = (char *)topic_request;
+  picoros_publisher_declare(&PicoRosso::node, &publisher_sync_request);
 
   ESP_LOGI(TAG, "Declaring subscriber on [%s]", topic_response);
-  subscription_rntp_response.topic.name = (char *)topic_response;
-  picoros_subscriber_declare(&PicoRosso::node, &subscription_rntp_response);
+  subscription_sync_response.topic.name = (char *)topic_response;
+  picoros_subscriber_declare(&PicoRosso::node, &subscription_sync_response);
 
   ESP_LOGD(TAG, "Setting up done.");
   return true;
