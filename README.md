@@ -2,13 +2,11 @@
 
 This is a modular system for pico-ros under espidf and PlatformIO. It allows you to write modules that can interact with ROS2 sending and receiving topics, publishing services, and so on.
 
-## Install
+For an example of a project that uses this library, see [oruga robot](https://github.com/xopxe/pico-oruga-platformio-espidf).
 
-TODO
+## Time synchronization
 
-## Time sinchronization
-
-If you do not have NTP available, like when connecting through a serial link, you can use the [Sync-Time service](https://github.com/xopxe/ros2_sync_time_service_ws). To use this service to set the microconotrller's time define `#USE_SYNC_TIME true` in `include/picorosso_config.h`
+If you do not have NTP available, like when connecting through a serial link, you can use the [Sync-Time service](https://github.com/xopxe/ros2_sync_time_service_ws). 
 
 ## Authors and acknowledgment
 
